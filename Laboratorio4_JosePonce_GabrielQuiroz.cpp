@@ -15,13 +15,14 @@ pthread_mutex_t mutex_forvar;
 pthread_cond_t cond_var;
 
 string buffer[64];
-string bufferclave[64];
-
 int bufferpermutacion1[64];
 int izquierda[32];
 int derecha[32];
 
-
+string bufferclave64[64];
+int bufferclave56permutacionpc1[56];
+int izquierdaclave[28];
+int derechaclave[28];
 
 
 
@@ -37,7 +38,16 @@ int permutacionInicial[64] = {
         63, 55, 47, 39, 31, 23, 15, 7
     };
     
-
+int permutacionPC1[56] = {
+        57, 49, 41, 33, 25, 17,  9,
+         1, 58, 50, 42, 34, 26, 18,
+        10,  2, 59, 51, 43, 35, 27,
+        19, 11,  3, 60, 52, 44, 36,
+        63, 55, 47, 39, 31, 23, 15,
+         7, 62, 54, 46, 38, 30, 22,
+        14,  6, 61, 53, 45, 37, 29,
+        21, 13, 5 , 28, 20, 12,  4
+    };
 
 //Subrutina para leer el archivo de texto y posteriormente convertir los caracteres a binario.
  
@@ -66,7 +76,9 @@ void *Leer(void *palabra1){
 			buffer[i]=  bin;
 		}
 	}
+	
 return NULL;
+
 }
 
 void *Leer2(void *palabra1){
@@ -91,30 +103,51 @@ void *Leer2(void *palabra1){
 		} 	
         reverse(bin.begin(), bin.end());
 		if(i<n){
-			bufferclave[i]=  bin;
+			bufferclave64[i]=  bin;
 		}
 	}
+	
 return NULL;
+
 }
 
-void *Permutacion1(NULL){	
+void *PermutacionP1(NULL){	
 	for(int i=0; i<64; i++){
 		bufferpermutacion1[i]= stoi(buffer[permutacionInicial[i]-1]);
 	}
 	
-	int k = 33;
+	int k = 32;
 	for(int j=0; j<32; j++){
 		izquierda[j] = bufferpermutacion1[j];
 		derecha[j] = bufferpermutacion1[k];
 		k++;
 	}	
+
+return NULL;
+
 }
 
+void *PermutacionPC1F(NULL){	
+
+	for(int i=0; i<56; i++){
+		bufferclave56permutacionpc1[i]= stoi(bufferclave64[permutacionPC1[i]-1]);
+	}
+	
+	int k = 28;
+	for(int j=0; j<28; j++){
+		izquierdaclave[j] = bufferclave56permutacionpc1[j];
+		derechaclave[j] = bufferclave56permutacionpc1[k];
+		k++;
+	}		
+	
+return NULL;
+	
+}
 
 int main(){
 
 	pthread_t thread, thread2;
-	pthread_t threadC1;
+	pthread_t threadC1, threadC2;
 	string numero;	
 	string texto;
 	string clave;
@@ -137,16 +170,14 @@ int main(){
 	
 	pthread_create(&thread2,NULL,Permutacion1,NULL);
 	pthread_join(thread2, NULL)	
-	
-	
-	
-	
+			
     cout << "Bienvenido introduce la clave a utilizar para cifrar: ";
 	cin >> clave; 	
 
 	pthread_create(&threadC1,NULL,Leer,(void*)&clave);
 	pthread_join(threadC1, NULL);
 
-	
+	pthread_create(&threadC2,NULL,PermutacionPC1F, NULL);
+	pthread_join(threadC2, NULL);
 	
 	}
