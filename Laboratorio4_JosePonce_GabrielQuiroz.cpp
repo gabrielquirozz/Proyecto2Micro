@@ -15,7 +15,10 @@ string buffer[64];	//buffer inicial para almacenar el texto en binario
 int bufferpermutacion1[64]; //buffer para almacenar luego de la permutacion inicial
 int izquierda[32];	//buffer para almacenar los primeros 32 bits luego de la permutacion inicial
 int derecha[32]; //buffer para almacenar los ultimos 32 bits luego de la permutacion inicial
-
+int izquierdanueva[32] //buffer utilizado para las 8 rondas para almacenar la izquierda nueva
+int derechanueva[32] //buffer utilizado para las 8 rondas para almacenar la derecha nueva
+int bufferintercambioDI[64] // buffer utilizado para intercambiar y almacenar la derecha e izquierda
+int bufferfinal[64] //buffer utilizado para almacenar el texto cifrado luego de permutacion inversa
 
 //variables de almacenamiento de clave
 string bufferclave64[64];	//buffer inicial para almacenar la clave en binario
@@ -61,6 +64,19 @@ int permutacionPC2[48] = {
         30, 40, 51, 45, 33, 48,
         44, 49, 39, 56, 34, 53,
         46, 42, 50, 36, 29, 32
+    };
+	
+//Matriz de permutacion INICIAL INVERSA - texto a cifrar
+
+int permutacionInicialInversa[64] = {
+        40, 8,  48, 16, 56, 24, 64, 32,
+        39, 7,  47, 15, 55, 23, 63, 31,
+        38, 6,  46, 14, 54, 22, 62, 30,
+        37, 5,  45, 13, 53, 21, 61, 29,
+        36, 4,  44, 12, 52, 20, 60, 28,
+        35, 3,  43, 11, 51, 19, 59, 27,
+        34, 2,  42, 10, 50, 18, 58, 26,
+        33, 1,  41,  9, 49, 17, 57, 25
     };
 
 //Subrutina para leer el archivo de texto y posteriormente convertir los caracteres a binario.
@@ -197,10 +213,43 @@ return NULL;
 
 }
 
+//funcion para realizar las rondas de izquierda y derecha
+void *rondasLiRi(NULL){	
+
+	for(int i=0; i<32; i++){
+			izquierdanueva[i] = derecha[i];
+			derechanueva[j] = bufferpP[i]^izquierda[i];
+	}
+	
+	for(int j=0; j<32; j++){
+		derecha[i] = derechanueva[i];
+		izquierda[i] = izquierdanueva[i];
+	}
+	
+return NULL;
+
+}
+
+//Permutacion inversa final para obtener el texto cifrado
+void *PermutacionINVERSA(NULL){	
+
+	for(int i=0; i<32; i++) {
+		bufferintercambioDI[i] = derecha[i];
+		bufferintercambioDI[i+32] = izquierda[i];	
+	}
+	
+	for(int j=0; j<64; j++){
+		bufferfinal[i] = bufferintercambioDI[permutacionInicialInversa[i]-1]
+		}
+
+return NULL;
+
+}
+
 
 int main(){
 
-	pthread_t thread, thread2; //threads para el texto a cifrar 
+	pthread_t thread, thread2, thread3, thread4; //threads para el texto a cifrar 
 	pthread_t threadC1, threadC2, threadC3 threadC4; //threads para la clave
 	string numero;	//string para leer el archivo de texto 
 	string texto;	//string donde se almacena el archivo leido de 64 bits
@@ -241,4 +290,11 @@ int main(){
 	pthread_create(&threadC4,NULL,PermutacionPC2F, NULL);
 	pthread_join(threadC4, NULL);
 	
+	pthread_create(&thread3,NULL,Permutacion1,NULL);
+	pthread_join(thread3, NULL)	
+	
+	pthread_create(&thread4,NULL,PermutacionINVERSA,NULL);
+	pthread_join(thread4, NULL)	
+
 	}
+
