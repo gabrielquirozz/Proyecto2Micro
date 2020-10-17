@@ -312,7 +312,7 @@ void* rondasLiRi(NULL) {
 
 	for (int i = 0; i < 32; i++) {
 		izquierdanueva[i] = derecha[i];
-		derechanueva[j] = bufferpP[i] ^ izquierda[i];
+		derechanueva[j] = auxbufferP[i] ^ izquierda[i];
 	}
 
 	for (int j = 0; j < 32; j++) {
@@ -348,7 +348,7 @@ void* expansion(void* arg) {
 
 void* Sboxes(void* arg) {
 	for (int i = 0; i < 48; i++) {
-		bufferexpxorki[i] = bufferexpansion[i] ^ bufferki[i];
+		bufferexpxorki[i] = bufferexpansion[i] ^ bufferclave48permutacionpc2[i];
 	}
 	for (int i = 0; i < 6; i++) {
 		Sbox1[i] = bufferexpxorki[i];
@@ -477,6 +477,10 @@ void* Sboxes(void* arg) {
 		int j = 3;
 		auxbufferP[i + 32] = 08[j];
 		j--;
+	}
+	for (int i = 0; i < 32; i++) {
+		auxbufferP[i] = permutacionP[i]-1
+
 	}
 
 
